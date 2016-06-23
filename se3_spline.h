@@ -142,7 +142,7 @@ void UniformSpline<T>::evaluate(T t, SE3Type &P, SE3DerivType &P_prim, SE3DerivT
             break;
         }
     }
-    size_t i0 = i - 1;
+    int i0 = i - 1;
 
     if ((i0 < 0) || (i0 > num_knots() - 3)) {
         cout << "DEBUG: offset=" << offset_ << " dt=" << dt_ << " knots=" << num_knots() << " tmin=" << min_time() << " tmax=" << max_time() << endl;
