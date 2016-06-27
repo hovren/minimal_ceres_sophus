@@ -90,10 +90,17 @@ void run_solver(T cost_func, UniformSpline<double>& spline, ceres::Solver::Optio
     ceres::Problem problem;
 
     // Local parameterization
+#if 1
+    ceres::LocalParameterization *se3_parameterization = new ceres::AutoDiffLocalParameterization<Sophus::test::SophusSE3Plus,Sophus::SE3::num_parameters, Sophus::SE3::DoF>;
+    cout << "Using AutoDiff Local Parameterization" << endl;
+#else
+    ceres::LocalParameterization *se3_parameterization = new Sophus::test::LocalParameterizationSE3;
+        cout << "Using analytical Local Parameterization" << endl;
+#endif
     for (size_t i=0; i < spline.num_knots(); ++i) {
         problem.AddParameterBlock(spline.get_knot_data(i),
                                   Sophus::SE3d::num_parameters,
-                                  new Sophus::test::LocalParameterizationSE3);
+                                  se3_parameterization);
     }
 
     problem.AddResidualBlock(cost_func, NULL, parameter_blocks);
@@ -138,7 +145,7 @@ int main(int argc, char** argv) {
     cout << "\n\n------------------------- AUTO ---------------------------------------" << endl;
     spline = create_zero_spline();
     constraint = new CircularSplineConstraint(spline, eval_times);
-    const size_t kStride = 4;
+    const size_t kStride = 2;
     auto cost_func_auto = new ceres::DynamicAutoDiffCostFunction<CircularSplineConstraint, kStride>(constraint);
     run_solver(cost_func_auto, spline, solver_options, num_eval);
 
