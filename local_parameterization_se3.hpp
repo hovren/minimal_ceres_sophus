@@ -22,6 +22,13 @@ public:
     const Eigen::Map<const Eigen::Matrix<double,6,1> > delta(delta_raw);
     Eigen::Map<Sophus::SE3d> T_plus_delta(T_plus_delta_raw);
     T_plus_delta = T * Sophus::SE3d::exp(delta);
+    const Eigen::IOFormat CommaInitFmt(StreamPrecision, DontAlignCols, ", ", ", ", "", "", " << ", ";");
+    //cout << "X " << T.matrix().format(CommaInitFmt) << endl;
+    //cout << "Y " << T_plus_delta.matrix().format(CommaInitFmt) << endl;
+    const Eigen::Map<const Eigen::Matrix<double, 7, 1>> T_param(T_raw);
+    const Eigen::Map<const Eigen::Matrix<double, 7, 1>> T_out(T_plus_delta_raw);
+    //cout << "\n" << (T_param - T_out).lpNorm<Eigen::Infinity>() << "\n";
+    //cout << T_param.format(CommaInitFmt) << " # " << T_out.format(CommaInitFmt) << endl;
     return true;
   }
 
@@ -53,6 +60,8 @@ public:
           const Eigen::Map< const Sophus::SE3Group<T> > x(x_raw);
           const Eigen::Map< const Eigen::Matrix<T,6,1> > delta(delta_raw);
           Eigen::Map< Sophus::SE3Group<T> > x_plus_delta(x_plus_delta_raw);
+          //const Eigen::IOFormat CommaInitFmt(StreamPrecision, DontAlignCols, ", ", ", ", "", "", " << ", ";");
+          //cout << "delta " << delta.format(CommaInitFmt) << endl;
           x_plus_delta = x * Sophus::SE3Group<T>::exp(delta);
           return true;
         }
