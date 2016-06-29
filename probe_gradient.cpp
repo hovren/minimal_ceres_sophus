@@ -19,6 +19,7 @@
 using std::cout;
 using std::endl;
 
+// Find a probing point by letting the optimizer do one iteration
 std::vector<double*> find_probe_point(size_t num_eval) {
     std::vector<double*> probe_point;
 
@@ -94,6 +95,10 @@ void run_gradient_checker(std::vector<double*>& probe_point) {
 int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0]);
     google::ParseCommandLineFlags(&argc, &argv, true);
+
+    cout << "\n============= GRADIENT CHECKER ====================" << endl;
+    cout << "Reports the gradient_result.error_jacobians value for different values of kStride." << endl;
+    cout << "Run with --logtostderr=1 to see log output from GradientChecker." << endl;
 
     const size_t num_eval = 8;
     auto probe_point = find_probe_point(num_eval);
